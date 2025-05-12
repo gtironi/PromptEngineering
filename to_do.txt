@@ -4,3 +4,12 @@ negative (não fazer algo)
 saida esturturada
 repetição de palavras
 memoria e como ela afeta a interação
+
+
+
+
+
+
+Agent
+
+https://github.com/microsoft/ai-agents-for-beginners
