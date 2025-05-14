@@ -8,7 +8,7 @@ um prompt, no geral, pode conter qualquer um dos seguintes componentes:
 * **Indicador de saída** – indica o tipo ou formato da saída.
 
 
-> **nem todos os componentes são obrigatórios**, e o formato ideal do prompt depende da tarefa.
+> ⚠️ **nem todos os componentes são obrigatórios**, e o formato ideal do prompt depende da tarefa.
 
 ## um bom prompt
 

@@ -128,188 +128,73 @@ Act as a human resource specialist, design a recruitment and retention strategy 
 ## 8. Generate Previous Knowledge
 
 **Explicação:**
-Envolve gerar conhecimento relevante antes de responder à pergunta, melhorando a precisão do modelo.
+Envolve gerar conhecimento relevante antes de responder à pergunta, melhorando a precisão do modelo. Podemos usar few-shot para gerar conhecimento de uma maneira especifica.
 
 ![Generate Previous Knowledge](genknow.png)
 
-**Exemplo Prático:**
+**Prompt Conhecimento:**
+```
+Input: A common effect of smoking lots of cigarettes in one’s lifetime is a higher than normal chance of getting lung cancer.
+Knowledge: Those who consistently averaged less than one cigarette per day over their lifetime had nine times the risk of dying from lung cancer than never smokers. Among people who smoked between one and 10 cigarettes per day, the risk of dying from lung cancer was nearly 12 times higher than that of never smokers.
+Input: A rock is the same size as a pebble.
+Knowledge: A pebble is a clast of rock with a particle size of 4 to 64 millimetres based on the Udden-Wentworth scale of sedimentology. Pebbles are generally considered larger than granules (2 to 4 millimetres diameter) and smaller than cobbles (64 to 256 millimetres diameter).
+Input: Part of golf is trying to get a higher point total than others.
+Knowledge:
+```
 
 **Prompt:**
 ```
-
-Pergunta: Parte do golfe é tentar obter um total de pontos mais alto do que outros. Sim ou não?
-Conhecimento:
-
+Question: Part of golf is trying to get a higher point total than others. Yes or No?
+Knowledge:
 ```
+
+> ⚠️ **Os resultados podem melhorar ou piorar**. O conhecimento gerado por LLMs nem sempre é útil ou verídico. Sempre que possível, insira conhecimentos prévios confiáveis para obter melhores resultados.
 
 **Tarefa:**
-1.  Use GENKNOW para responder a uma pergunta sobre um evento científico.
-2.  Aplique a técnica para explicar um conceito econômico.
+1.  Use GENKNOW  para gerar um mapa de tendências e oportunidades
+2.  Use o conhecimento gerado para encontrar uma ideia de negócio com propósito
 
----
+## 9. Prompt Chaining (Dividindo em Subtarefas)
 
-## 9. Dividindo em Subtarefas (Prompt Chaining)
+Dividir uma tarefa complexa em subtarefas menores, onde a saída de um prompt serve como entrada para o próximo. É uma ótima prática para tarefas muito complexas.
 
-**Explicação:**
-Dividir uma tarefa complexa em subtarefas menores, onde a saída de um prompt serve como entrada para o próximo.
+Sempre se pergunte o seguinte: **"Um ser humano executa essa tarefa executando apenas uma coisa?"** se a resposta for não, é um bom indicio que a tarefa deve ser dividida para obter melhores resultados.
 
-**Exemplo Prático:**
+**Prompt 1 (sub-tarefa):**
+```
+Você é um especialista em empreendedorismo. Sua tarefa é ajudar a responder a perguntas com base no seguinte documento.
+O primeiro passo é identificar o capítulo relevante na estrutura do documento.
+Forneça o capítulo ou capítulos relevantes usando a tag \<chapters\>\</chapters\>.
 
-**Prompt 1:**
+Estrutura do documento:
+{
+Capítulo 1: A Transição da Mentalidade Corporativa para a Empreendedora:
+Capítulo 2: Encontrando e Validando Ideias com Potencial
+Capítulo 3: Entendendo Seu Cliente
+Capítulo 4: Definindo sua Proposta de Valor Única
+Capítulo 5: O Poder do Produto Mínimo Viável (MVP)
+Capítulo 6: Medindo e Aprendendo com o Feedback
+Capítulo 7: Desenhando o Modelo de Receita
+Capítulo 8: Encontrando Seu Mercado (Novamente!)
+Capítulo 9: Adquirindo Seus Primeiros Clientes
+Capítulo 10: Construindo um Time Forte (Mesmo que Inicialmente Pequeno)
+}
+
+Pergunta: {prompt}
 ```
 
-Você é um assistente prestativo. Sua tarefa é ajudar a responder a uma pergunta com base em um documento.
-O primeiro passo é extrair citações relevantes do documento, delimitado por \#\#\#\#.
-Forneça a lista de citações usando a tag \<quotes\>\</quotes\>.
-Responda com "No relevant quotes found\!" se nenhuma citação for encontrada.
-
-####
-
-{{document}}
-
-####
-
+**Prompt 2 (tarefa final):**
 ```
 
-**Prompt 2:**
-```
-
-Dado um conjunto de citações relevantes (delimitado por \<quotes\>\</quotes\>) extraídas de um documento e o documento original (delimitado por \#\#\#\#), componha uma resposta à pergunta.
+Dado um conhecimento relevante extraido de um playbook de empreendedorismo, componha uma resposta à pergunta.
 Certifique-se de que a resposta seja precisa, com tom amigável e útil.
 
-####
-
-{{document}}
-
-####
-
-\<quotes\>
-
-  - Chain-of-thought (CoT) prompting[27]
-  - Generated knowledge prompting[37]
-  - Least-to-most prompting[38]
-  - Self-consistency decoding[39]
-  - Complexity-based prompting[41]
-  - Self-refine[42]
-  - Tree-of-thought prompting[43]
-  - Maieutic prompting[45]
-  - Directional-stimulus prompting[46]
-  - Textual inversion and embeddings[59]
-  - Using gradient descent to search for prompts[61][62][63][64]
-  - Prompt injection[65][66][67]
-    \</quotes\>
-
-<!-- end list -->
-
+Pergunta: {prompt}
 ```
 
 **Tarefa:**
 
-1.  Crie uma cadeia de prompts para resumir um artigo longo e extrair os principais pontos.
-2.  Use prompt chaining para gerar um plano de aula detalhado a partir de um tópico geral.
+1.  Quais são os problemas que podem ser observados nos prompts utilizados como exemplo?
+2. Faça um exemplo de Prompt Chaining para criar um assistente de vendas cuja função redigir um cold email personalizados para os clientes
 
 -----
-
-## 10\. Reflexion Framework
-
-**Explicação:**
-Reflexion é uma estrutura que utiliza feedback linguístico para melhorar o desempenho do agente, permitindo que ele aprenda com erros anteriores.
-
-**Tarefa:**
-
-1.  Simule como um agente Reflexion melhoraria na escrita de um resumo ao receber feedback sobre erros de concisão.
-2.  Modele como um agente usaria Reflexion para aprimorar sua capacidade de depurar código Python.
-
------
-
-## 11\. ReAct
-
-**Explicação:**
-ReAct combina raciocínio e ação, permitindo que o modelo interaja com ambientes externos para obter informações e gerar respostas mais precisas.
-
-**Exemplo Prático:**
-
-**Prompt:**
-
-```
-
-Question: What is the elevation range for the area that the eastern sector of the Colorado orogeny extends into?
-
-Thought 1: I need to search Colorado orogeny...
-Action 1: Search[Colorado orogeny]
-Observation 1: The Colorado orogeny was...
-...
-Final Answer: 1,800 to 7,000 ft.
-
-```
-
-**Tarefa:**
-
-1.  Use ReAct para criar um agente que possa responder a perguntas sobre um artigo da Wikipedia.
-2.  Simule um agente ReAct que planeja uma viagem, buscando informações sobre voos, hotéis e atrações.
-
------
-
-## 12\. Autoconsistência
-
-**Explicação:**
-Autoconsistência envolve gerar múltiplas cadeias de pensamento e selecionar a resposta mais consistente entre elas.
-
-**Exemplo Prático:**
-
-**Prompt:**
-
-```
-
-Quando eu tinha 6 anos, minha irmã tinha metade da minha idade.
-Agora tenho 70 anos, quantos anos tem minha irmã?
-
-```
-
-**Tarefa:**
-
-1.  Use Autoconsistência para resolver problemas de raciocínio lógico.
-2.  Aplique a técnica para escolher a melhor tradução de uma frase entre várias opções geradas.
-
------
-
-Lembre-se de adaptar os exemplos e tarefas ao seu contexto específico e objetivos de aprendizado. Boa sorte\!
-
-```
-
-```
-```
-
-
-
-Interview pattern
-
-user prompt instrict -> model ask questions -> user answer -> model draws the respondse
-
-exemplo questão a questão:
-You will act as a seasoned travel expert. Your objective is to engage in a comprehensive trip-planning session with me. Begin by asking a series of detailed questions, one at a time, to gather all the essential information required to craft the most tailored and memorable travel itinerary based on my specific preferences, interests, and budget.
-
-exemplo várias questões:
-You will act as a fitness expert who is current with the latest research data and provide very detailed step-by-step instructions in reply to my queries. You will interview me, asking me all the relevant questions necessary for you to generate the best possible answer to my queries.
-
-Create a gym workout program to lose weight and build strength.
-
-Zeor shot
-
-Few shot
-
-Chain of thougt
-
-Chain of the few shoe
-
-chain of thoguth zero shot
-LEts think step by step
-
-Tree of thogts:
-"Imagine three different experts answering this question. All experts will write down 1 step of their thinking, and then share it with the group. Then all experts will go on to the next step, etc. If any expert realizes they're wrong at any point, then they leave."
-
-Act as a human resource specialist, design a recruitment and retention strategy for an e-commerce business, focusing on attracting and retaining skilled remote employees."
-
-generate prevous knolage
-
-dividindo em subtarefas
