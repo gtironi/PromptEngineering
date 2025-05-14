@@ -96,9 +96,9 @@ Lembre-se de que não é necessário usar o formato QA. O formato do prompt depe
 
 **Prompt:**
 ```
-Isso é incrível! // Positivo  
-Isto é mau! // Negativo  
-Uau, esse filme foi radical! // Positivo  
+Isso é incrível! // Positivo
+Isto é mau! // Negativo
+Uau, esse filme foi radical! // Positivo
 Que espetáculo horrível! //
 ```
 
@@ -123,3 +123,5 @@ Um prompt pode conter qualquer um dos seguintes componentes:
 - **Indicador de saída** – indica o tipo ou formato da saída.
 
 Nem todos os componentes são necessários para um prompt e o formato depende da tarefa em questão. Abordaremos exemplos mais concretos nos próximos guias.
+
+# -------------------------- Colocar sobre as Tips
