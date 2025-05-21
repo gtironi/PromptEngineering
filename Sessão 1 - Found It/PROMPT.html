@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Prompting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            margin: 15mm;
+        }
+
+        :root {
+            --verde-neon: #00FFB2;
+            --preto-profundo: #0D0D0D;
+            --branco-puro: #FFFFFF;
+            --cinza-escuro: #1A1A1A;
+            --cinza-medio: #333333;
+            --vermelho-erro: #FF0000;
+            --verde-acerto: #00FF00;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--preto-profundo);
+            color: var(--branco-puro);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: var(--cinza-escuro);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 255, 178, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 3px solid var(--verde-neon);
+            margin-bottom: 35px;
+        }
+
+        header h1 {
+            color: var(--verde-neon);
+            font-size: 2.5em;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 255, 178, 0.3);
+        }
+
+        h2 {
+            color: var(--verde-neon);
+            font-size: 1.8em;
+            font-weight: 700;
+            border-bottom: 2px solid var(--verde-neon);
+            padding-bottom: 10px;
+            margin-top: 40px;
+            text-shadow: 0 0 5px rgba(0, 255, 178, 0.2);
+        }
+
+        h3 {
+            color: var(--branco-puro);
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 30px;
+            border-left: 4px solid var(--verde-neon);
+            padding-left: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        ul li::before {
+            content: '•';
+            color: var(--verde-neon);
+            font-size: 1.2em;
+            position: absolute;
+            left: 0;
+        }
+
+        .code-block {
+            background-color: var(--preto-profundo);
+            border: 1px solid var(--verde-neon);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: var(--branco-puro);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .alert-box {
+            background-color: rgba(0, 255, 178, 0.1);
+            border-left: 5px solid var(--verde-neon);
+            padding: 15px;
+            margin: 20px 0;
+            color: var(--branco-puro);
+        }
+
+        figcaption {
+            text-align: center;
+            font-style: italic;
+            color: #aaa;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* Matriz com o mesmo layout dos exemplos */
+        .matrix-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 30px auto;
+            max-width: 100%;
+        }
+
+        .matrix-cell {
+            background-color: var(--preto-profundo);
+            border: 1px solid var(--verde-neon);
+            border-radius: 8px;
+            padding: 20px;
+            width: calc(50% - 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10px rgba(0, 255, 178, 0.1);
+        }
+
+        .matrix-cell h4 {
+            color: var(--verde-neon);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .matrix-cell ul {
+            text-align: left;
+            margin-left: 0;
+            padding-left: 20px;
+            flex-grow: 1;
+        }
+
+        .matrix-cell ul li {
+            margin-bottom: 8px;
+        }
+
+        /* Sistema de grid melhorado para exemplos */
+        .example-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 30px auto;
+            max-width: 100%;
+        }
+
+        .example-item {
+            background-color: var(--preto-profundo);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--verde-neon);
+            display: flex;
+            flex-direction: column;
+            width: calc(50% - 10px);
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 178, 0.1);
+        }
+
+        @media (max-width: 767px) {
+            .matrix-cell, .example-item {
+                width: 100%;
+            }
+        }
+
+        .example-item h4 {
+            color: var(--verde-neon);
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+            border-bottom: 1px dashed var(--verde-neon);
+            padding-bottom: 8px;
+        }
+
+        .example-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .example-content pre {
+            text-align: left;
+            padding: 15px;
+            border: 1px dashed var(--verde-neon);
+            border-radius: 5px;
+            background-color: var(--cinza-medio);
+            max-width: 100%;
+            box-sizing: border-box;
+            width: 100%;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            color: var(--branco-puro);
+            font-family: 'Courier New', Courier, monospace;
+            flex-grow: 1;
+            min-height: 100px;
+        }
+
+        .status-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .status-icon.wrong {
+            color: var(--vermelho-erro);
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+        }
+
+        .status-icon.correct {
+            color: var(--verde-acerto);
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+        }
+
+        /* Melhorias para impressão */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+
+            .container {
+                background-color: white;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            header h1 {
+                color: black;
+                text-shadow: none;
+            }
+
+            h2, h3 {
+                color: black;
+                text-shadow: none;
+            }
+
+            .matrix-cell, .example-item {
+                border: 1px solid black;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .matrix-cell h4, .example-item h4 {
+                color: black;
+            }
+
+            ul li::before {
+                color: black;
+            }
+
+            .status-icon.wrong {
+                color: black;
+                text-shadow: none;
+            }
+
+            .status-icon.correct {
+                color: black;
+                text-shadow: none;
+            }
+
+            .example-content pre {
+                border: 1px dashed black;
+                background-color: #f0f0f0;
+                color: black;
+            }
+
+            .alert-box {
+                border-left: 5px solid black;
+                background-color: #f0f0f0;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Manual de Prompting</h1>
+        </header>
+
+        <h2>Componentes Essenciais de um Prompt</h2>
+        <p>Um prompt, no geral, pode conter qualquer um dos seguintes componentes:</p>
+        <ul>
+            <li><strong>Instrução</strong> – uma tarefa ou instrução específica que você deseja que o modelo execute.</li>
+            <li><strong>Contexto</strong> – pode envolver informações externas ou contexto adicional que pode direcionar o modelo para melhores respostas.</li>
+            <li><strong>Dados de entrada</strong> – é a entrada ou pergunta para a qual estamos interessados em encontrar uma resposta.</li>
+            <li><strong>Indicador de saída</strong> – indica o tipo ou formato da saída.</li>
+        </ul>
+        <div class="alert-box">
+            <p>⚠️ <strong>Nem todos os componentes são obrigatórios</strong>, e o formato ideal do prompt depende da tarefa.</p>
+        </div>
+
+        <h2>Um Bom Prompt: Quatro Domínios Essenciais</h2>
+        <p>A qualidade de um prompt pode ser analisada superficialmente com base em quatro critérios principais.</p>
+
+        <div class="matrix-container">
+            <div class="matrix-cell">
+                <h4>Clareza</h4>
+                <ul>
+                    <li>Use linguagem clara e concisa.</li>
+                    <li>Evite jargões e termos complexos.</li>
+                    <li>Forneça instruções explícitas.</li>
+                </ul>
+            </div>
+            <div class="matrix-cell">
+                <h4>Contexto</h4>
+                <ul>
+                    <li>Estabeleça o contexto necessário.</li>
+                    <li>Inclua informações relevantes.</li>
+                    <li>Forneça dados de suporte quando necessário.</li>
+                </ul>
+            </div>
+            <div class="matrix-cell">
+                <h4>Precisão</h4>
+                <ul>
+                    <li>Seja específico sobre o que deseja.</li>
+                    <li>Use exemplos para ilustrar expectativas.</li>
+                    <li>Defina parâmetros claros para a resposta.</li>
+                </ul>
+            </div>
+            <div class="matrix-cell">
+                <h4>Role-play/Persona pattern</h4>
+                <ul>
+                    <li>Assuma uma persona adequada ao contexto.</li>
+                    <li>Forneça detalhes para o role-play.</li>
+                    <li>Defina o tom e estilo desejados.</li>
+                </ul>
+            </div>
+        </div>
+        <figcaption>Figura: Os quatro domínios essenciais para um bom prompt: Clareza, Contexto, Precisão e Role-play/Persona.</figcaption>
+
+
+        <h3>1. Clareza</h3>
+        <p>Utilize linguagem clara e concisa, evite jargões e termos complexos, e forneça instruções explícitas.</p>
+        <div class="example-grid">
+            <div class="example-item">
+                <h4>Exemplo (Ruim - Sem Clareza):</h4>
+                <div class="example-content">
+                    <span class="status-icon wrong">✖</span>
+                    <pre>Discuta processos culinários que ocorrem em estípulas foliares de plantas com a ajuda da luz solar. Além disso, mencione algo verde e como luz, ar e água são importantes para as partes aéreas da planta.</pre>
+                </div>
+            </div>
+            <div class="example-item">
+                <h4>Exemplo (Bom - Com Clareza):</h4>
+                <div class="example-content">
+                    <span class="status-icon correct">✔</span>
+                    <pre>Explique o processo de fotossíntese em plantas, detalhando o papel da clorofila e como a luz solar, dióxido de carbono e água contribuem para esta função biológica.</pre>
+                </div>
+            </div>
+        </div>
+
+        <h3>2. Contexto</h3>
+        <p>Estabeleça o contexto e inclua informações relevantes para guiar o modelo.</p>
+        <div class="example-grid">
+            <div class="example-item">
+                <h4>Exemplo (Ruim - Sem Contexto):</h4>
+                <div class="example-content">
+                    <span class="status-icon wrong">✖</span>
+                    <pre>Escreva o que aconteceu durante o início da Guerra Revolucionária em 1775.</pre>
+                </div>
+            </div>
+            <div class="example-item">
+                <h4>Exemplo (Bom - Com Contexto):</h4>
+                <div class="example-content">
+                    <span class="status-icon correct">✔</span>
+                    <pre>Descreva os eventos históricos que levaram à Guerra Revolucionária Americana, focando em incidentes chave como o Boston Tea Party, Batalha de Saratoga, etc. Destaque as tensões entre as colônias americanas e o governo britânico e explique como esses eventos levaram ao início da Guerra Revolucionária em 1775.</pre>
+                </div>
+            </div>
+        </div>
+
+        <h3>3. Precisão</h3>
+        <p>Seja específico e utilize exemplos para ilustrar o que você espera.</p>
+        <div class="example-grid">
+            <div class="example-item">
+                <h4>Exemplo (Ruim - Sem Precisão):</h4>
+                <div class="example-content">
+                    <span class="status-icon wrong">✖</span>
+                    <pre>Fale sobre oferta e demanda e como isso é afetado na economia.</pre>
+                </div>
+            </div>
+            <div class="example-item">
+                <h4>Exemplo (Bom - Com Precisão):</h4>
+                <div class="example-content">
+                    <span class="status-icon correct">✔</span>
+                    <pre>Explique o conceito de oferta e demanda em economia. Descreva como um aumento na demanda pode influenciar os preços com a ajuda de um exemplo ilustrativo, como o mercado de smartphones. Da mesma forma, explique as repercussões da redução da oferta nos preços, traçando paralelos com situações como interrupções na produção de petróleo.</pre>
+                </div>
+            </div>
+        </div>
+
+        <h3>4. Role-play / Persona Pattern</h3>
+        <p>Assuma uma persona e forneça contexto para o role-play, direcionando o tom e o estilo da resposta.</p>
+        <div class="example-grid">
+            <div class="example-item">
+                <h4>Exemplo (Ruim - Sem Role-play):</h4>
+                <div class="example-content">
+                    <span class="status-icon wrong">✖</span>
+                    <pre>Escreva uma entrada de diário descrevendo a estranha flora e fauna de um planeta alienígena inexplorado.</pre>
+                </div>
+            </div>
+            <div class="example-item">
+                <h4>Exemplo (Bom - Com Role-play):</h4>
+                <div class="example-content">
+                    <span class="status-icon correct">✔</span>
+                    <pre>Finja que você é um astronauta que acabou de pousar em um planeta alienígena inexplorado. Escreva uma entrada de diário descrevendo a estranha flora e fauna que você encontrou, como a cor do céu e os sons desconhecidos ecoando pela paisagem alienígena. Expresse seus sentimentos de excitação, curiosidade e uma pitada de apreensão enquanto documenta esta jornada extraordinária.</pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
