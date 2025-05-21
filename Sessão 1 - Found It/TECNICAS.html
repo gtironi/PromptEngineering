@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnicas de Engenharia de Prompt - FOUND IT.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            margin: 15mm;
+            size: A4;
+        }
+        
+        :root {
+            --verde-neon: #00FFB2;
+            --azul-claro: #33CCFF;
+            --rosa-claro: #FF6699;
+            --verde-claro: #66CC99;
+            --amarelo-claro: #FFCC66;
+            --preto-profundo: #0D0D0D;
+            --branco-puro: #FFFFFF;
+            --cinza-escuro: #1A1A1A;
+            --cinza-medio: #333333;
+            --vermelho-erro: #FF0000;
+            --verde-acerto: #00FF00;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--preto-profundo);
+            color: var(--branco-puro);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: var(--cinza-escuro);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 255, 178, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 3px solid var(--verde-neon);
+            margin-bottom: 35px;
+        }
+
+        header h1 {
+            color: var(--verde-neon);
+            font-size: 2.5em;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 255, 178, 0.3);
+        }
+
+        h2 {
+            color: var(--verde-neon);
+            font-size: 1.8em;
+            font-weight: 700;
+            border-bottom: 2px solid var(--verde-neon);
+            padding-bottom: 10px;
+            margin-top: 40px;
+            text-shadow: 0 0 5px rgba(0, 255, 178, 0.2);
+        }
+
+        h3 {
+            color: var(--branco-puro);
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 30px;
+            border-left: 4px solid var(--verde-neon);
+            padding-left: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background-color: var(--preto-profundo);
+            border: 1px solid var(--verde-neon);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: var(--branco-puro);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .task {
+            background-color: rgba(0, 255, 178, 0.1);
+            border-left: 5px solid var(--verde-neon);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .task h4 {
+            color: var(--verde-neon);
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+
+        .task ol {
+            margin-bottom: 0;
+        }
+
+        /* Estilos para os diagramas */
+        .diagram-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        /* Estilos para Few-shot vs Zero-shot CoT */
+        .cot-comparison {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .cot-box {
+            width: calc(50% - 20px);
+            min-width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .cot-box h4 {
+            text-align: center;
+            margin-top: 0;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 8px;
+        }
+
+        .cot-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .cot-answer {
+            font-style: italic;
+            color: #ddd;
+        }
+
+        .cot-output {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #666;
+        }
+
+        .cot-output-error {
+            color: var(--vermelho-erro);
+        }
+
+        .cot-output-correct {
+            color: var(--verde-acerto);
+        }
+
+        /* Estilos para o Tree of Thoughts */
+        .tree-container {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            position: relative;
+            margin: 30px auto;
+        }
+
+        .tree-node {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .tree-arrow {
+            position: absolute;
+            height: 2px;
+            transform-origin: 0 0;
+        }
+
+        /* Estilos para GenKnow */
+        .genknow-diagram {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 30px auto;
+            width: 100%;
+            max-width: 700px;
+        }
+        
+        .genknow-box {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            height: 40px;
+        }
+        
+        .genknow-arrow {
+            width: 30px;
+            height: 2px;
+            background-color: #fff;
+            position: relative;
+        }
+        
+        .genknow-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid #fff;
+        }
+        
+        .genknow-knowledge {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 120px;
+        }
+        
+        .genknow-k-item {
+            background-color: var(--amarelo-claro);
+            color: black;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        /* Estilos de impressão */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+            
+            .container {
+                background-color: white;
+                box-shadow: none;
+                margin: 0;
+                padding: 10px;
+                max-width: 100%;
+            }
+            
+            header h1, h2, h3 {
+                color: black;
+                text-shadow: none;
+            }
+            
+            .code-block {
+                background-color: #f5f5f5;
+                border: 1px solid #ccc;
+                color: black;
+            }
+            
+            .task {
+                border-left: 5px solid #333;
+                background-color: #f5f5f5;
+            }
+            
+            .task h4 {
+                color: #333;
+            }
+
+            .cot-box {
+                border: 1px solid #333;
+                page-break-inside: avoid;
+            }
+            
+            .cot-answer {
+                color: #666;
+            }
+            
+            .cot-output-error {
+                color: #900;
+            }
+            
+            .cot-output-correct {
+                color: #090;
+            }
+
+            .tree-arrow, .genknow-arrow {
+                background-color: #333;
+            }
+            
+            .genknow-arrow::after {
+                border-left-color: #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Técnicas de Engenharia de Prompt</h1>
+        </header>
+        
+        <p>Base prática e direta sobre técnicas de engenharia de prompt.</p>
+
+        <h2>1. Interview Pattern</h2>
+        <p>É usado para o próprio modelo pedir o contexto necessário para a tarefa. Antes de responder, o modelo pedirá uma serie de respostas (contextos) para enriquecer a análise. O Isso ajuda a refinar progressivamente a solicitação e obter respostas mais direcionadas.</p>
+
+        <h3>(Questão a Questão):</h3>
+        <div class="code-block">You will act as a seasoned travel expert. Your objective is to engage in a comprehensive trip-planning session with me. Begin by asking a series of detailed questions, one at a time, to gather all the essential information required to craft the most tailored and memorable travel itinerary based on my specific preferences, interests, and budget.</div>
+
+        <h3>(Bloco de Questões):</h3>
+        <div class="code-block">You will act as a fitness expert who is current with the latest research data and provide very detailed step-by-step instructions in reply to my queries. You will interview me, asking me all the relevant questions necessary for you to generate the best possible answer to my queries.
+
+Create a gym workout program to lose weight and build strength.</div>
+
+        <div class="task">
+            <h4>Tarefa:</h4>
+            <ol>
+                <li>Crie um prompt usando o "Interview Pattern" para ajudar um empreendedor de primeira viagem a achar a ideia ideal.</li>
+            </ol>
+        </div>
+
+        <h2>2. Zero-Shot Prompting</h2>
+        <p>É básicamente a forma que todo mundo está acostumado a interagir com os modelos. Apenas colocando a tarefa e algumas informaçẽos sobre.</p>
+
+        <div class="code-block">Resuma o seguinte texto em três frases:
+"A engenharia de prompt é uma técnica crucial para otimizar a interação com modelos de linguagem. Envolve a criação de prompts eficazes que direcionam o modelo a gerar respostas precisas e relevantes. Ao utilizar diferentes técnicas de prompt, podemos melhorar significativamente o desempenho do modelo em diversas tarefas."</div>
+
+        <div class="task">
+            <h4>Tarefa:</h4>
+            <ol>
+                <li>Faça um prompt Zero-Shot, usando o que você aprendeu sobre baos práticas de prompt.</li>
+            </ol>
+        </div>
+
+        <h2>3. Few-Shot Prompting</h2>
+        <p>Few-shot prompting fornece alguns exemplos ao modelo para demonstrar o resultado desejado e/ou como o modelo deve resolver a tarefa.</p>
+
+        <div class="code-block">Faça uma análise do feedback recebido pelos clientes na minha startup. Quero que você me diga o que fazer com base nele.
+
+Q: "O produto é bom, mas a navegação no site é confusa."
+A: Repense na jornada do cliente.
+
+Q: "O suporte ao cliente foi excelente e rápido."
+A: Mantenha a qualidade do atendimento.
+
+Q: "O produto chegou danificado e demorou muito."
+A: Revise o produto e a logística.
+
+Q: "O preço é alto, mas a qualidade justifica."
+A: Avalie a estratégia de preços.
+
+Q: "A variedade de produtos é ótima, mas faltam opções para tamanhos maiores."
+A: Expanda a linha de produtos.
+
+Q: "O aplicativo trava com frequência e a interface é poluída."
+A:</div>
+
+        <div class="task">
+            <h4>Tarefa:</h4>
+            <ol>
+                <li>Crie um prompt de few-shot para avaliar a qualidade de perguntas planejadas para a entrevista com clientes.</li>
+            </ol>
+        </div>
+
+        <h2>4. Chain of Thought (CoT)</h2>
+        <p>Estimula etapas intemediárias de raciocínio. É interessante ser combinada com Few-Shot.</p>
+
+        <div class="code-block">Q: Ideia de Negócio: Serviço de entrega de refeições saudáveis e orgânicas em São Paulo.
+A: Para calcular o TAM, precisamos considerar o mercado total de refeições em São Paulo. Supondo que 10 milhões de pessoas comam fora regularmente e que o gasto médio por refeição seja R$30, o TAM anual seria 10.000.000 x R$30 x 365 = R$109.5 bilhões. O SAM seria a parcela desse mercado que busca refeições saudáveis e orgânicas, estimado em 10%, ou R$10.95 bilhões. O SOM seria a parcela que nossa empresa pode realisticamente atingir, considerando capacidade e concorrência, estimado em 1%, ou R$109.5 milhões.
+
+Q: Ideia de Negócio: Aplicativo de aprendizado de idiomas personalizado com IA.
+A: Para o TAM, consideramos o mercado global de aprendizado de idiomas online. Supondo que 500 milhões de pessoas aprendam idiomas online e que o gasto anual médio seja US$100, o TAM seria 500.000.000 x US$100 = US$50 bilhões. O SAM seria a parcela para aprendizado personalizado com IA, estimado em 20%, ou US$10 bilhões. O SOM seria a parcela que nossa empresa pode atingir, considerando a concorrência e o marketing, estimado em 5%, ou US$2.5 bilhões.
+
+Q: Ideia de Negócio: Plataforma online para conectar freelancers com projetos remotos no Brasil.
+A: Para o TAM, consideramos o mercado de trabalho freelancer no Brasil. Supondo que 10 milhões de freelancers atuem no Brasil e que a receita anual média por freelancer seja R$50.000, o TAM seria 10.000.000 x R$50.000 = R$500 bilhões. O SAM seria a parcela para plataformas online que conectam freelancers com projetos remotos, estimado em 30%, ou R$150 bilhões. O SOM seria a parcela que nossa plataforma pode atingir, considerando a concorrência e a especialização, estimado em 10%, ou R$50 bilhões.
+
+Q: Ideia de Negócio: Serviço de assinatura de caixas de produtos de beleza veganos e sustentáveis.
+A: Para o TAM, consideramos o mercado de cosméticos no Brasil. Supondo que o mercado seja de R$100 bilhões e uma parcela de 20% para produtos de beleza veganos e sustentáveis, o TAM seria de R$20 bilhões. O SAM seria a parcela desse mercado para serviços de assinatura, que estimamos em 15%, resultando em um SAM de R$3 bilhões. O SOM seria a parcela que nossa empresa poderia alcançar com marketing eficaz e diferenciação, estimado em 5%, resultando em um SOM de R$150 milhões.
+
+Q: Ideia de Negócio: Aplicativo móvel para agendamento e pagamento de serviços de beleza em salões locais.
+A: Para o TAM, consideramos o mercado de serviços de beleza em salões nas principais cidades do Brasil. Supondo que existam 50 milhões de clientes potenciais e um gasto anual de R$1000 por cliente, o TAM seria de R$50 bilhões. O SAM seria a parcela desse mercado que utiliza agendamento online, que estimamos em 40%, resultando em um SAM de R$20 bilhões. O SOM seria a parcela que nosso aplicativo poderia capturar com uma boa estratégia de marketing e funcionalidades, estimado em 10%, resultando em um SOM de R$5 bilhões.
+
+Q: Ideia de Negócio: Plataforma de e-commerce especializada em produtos artesanais e locais.
+A:</div>
+
+        <h3>Few-shot vs Zero-shot</h3>
+
+        <div class="cot-comparison">
+            <!-- Few-shot -->
+            <div class="cot-box" style="border-color: #999;">
+                <h4 style="text-align: center;">(a) Few-shot</h4>
+                <div class="cot-question">Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. Each can has 3 tennis balls. How many tennis balls does he have now?</div>
+                <div class="cot-answer">A: The answer is 11.</div>
+                <div class="cot-question">Q: A juggler can juggle 16 balls. Half of the balls are golf balls, and half of the golf balls are blue. How many blue golf balls are there?</div>
+                <div class="cot-answer">A: </div>
+                <div class="cot-output">(Output) The answer is 8. <span class="cot-output-error">✗</span></div>
+            </div>
+
+            <!-- Few-shot-CoT -->
+            <div class="cot-box" style="border-color: #999;">
+                <h4 style="text-align: center;">(b) Few-shot-CoT</h4>
+                <div class="cot-question">Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. Each can has 3 tennis balls. How many tennis balls does he have now?</div>
+                <div class="cot-answer">A: Roger started with 5 balls. 2 cans of 3 tennis balls each is 6 tennis balls. 5 + 6 = 11. The answer is 11.</div>
+                <div class="cot-question">Q: A juggler can juggle 16 balls. Half of the balls are golf balls, and half of the golf balls are blue. How many blue golf balls are there?</div>
+                <div class="cot-answer">A: </div>
+                <div class="cot-output">(Output) <span style="color:#33CCFF;">The juggler can juggle 16 balls. Half of the balls are golf balls. So there are 16 / 2 = 8 golf balls. Half of the golf balls are blue. So there are 8 / 2 = 4 blue golf balls.</span> The answer is 4. <span class="cot-output-correct">✓</span></div>
+            </div>
+
+            <!-- Zero-shot -->
+            <div class="cot-box" style="border-color: #999;">
+                <h4 style="text-align: center;">(c) Zero-shot</h4>
+                <div class="cot-question">Q: A juggler can juggle 16 balls. Half of the balls are golf balls, and half of the golf balls are blue. How many blue golf balls are there?</div>
+                <div class="cot-answer">A: The answer (arabic numerals) is</div>
+                <div class="cot-output">(Output) 8 <span class="cot-output-error">✗</span></div>
+            </div>
+
+            <!-- Zero-shot-CoT -->
+            <div class="cot-box" style="border-color: #999;">
+                <h4 style="text-align: center;">(d) Zero-shot-CoT (Ours)</h4>
+                <div class="cot-question">Q: A juggler can juggle 16 balls. Half of the balls are golf balls, and half of the golf balls are blue. How many blue golf balls are there?</div>
+                <div class="cot-answer">A: Let's think step by step.</div>
+                <div class="cot-output">(Output) <span style="color:#33CCFF;">There are 16 balls in total. Half of the balls are golf balls. That means that there are 8 golf balls. Half of the golf balls are blue. That means that there are 4 blue golf balls.</span></div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h4>Tarefa:</h4>
+            <ol>
+                <li>Use Chain of Thought prompting para mapear as dores, criar hipoteses e planejar testes de baixo custo.</li>
+            </ol>
+        </div>
+
+        <h2>7. Tree of Thoughts</h2>
+        <p>Permite ao modelo explorar múltiplos caminhos de pensamento, como uma árvore, para resolver problemas complexos.</p>
+
+        <div class="diagram-container">
+            <div style="position: relative; width: 500px; height: 300px;">
+                <!-- Input node -->
+                <div style="position: absolute; top: 0; left: 200px; width: 100px; height: 40px; border: 2px solid #333; border-radius: 20px; display: flex; justify-content: center; align-items: center; background-color: white; color: black;">Input</div>
+                
+                <!-- Thought box -->
+                <div style="position: absolute; top: 0; right: 40px; width: 70px; height: 30px; border: 2px dashed #333; display: flex; justify-content: center; align-items: center; color: #333;">thought</div>
+                
+                <!-- First layer nodes -->
+                <div style="position: absolute; top: 70px; left: 120px; width: 40px; height: 30px; background-color: #33CCFF; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 70px; left: 200px; width: 40px; height: 30px; background-color: #006680; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 70px; left: 280px; width: 40px; height: 30px; background-color: #FF6699; border-radius: 5px;"></div>
+                
+                <!-- Second layer nodes -->
+                <div style="position: absolute; top: 140px; left: 80px; width: 40px; height: 30px; background-color: #33CCFF; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 140px; left: 160px; width: 40px; height: 30px; background-color: white; border: 1px solid #FF6699; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 140px; left: 240px; width: 40px; height: 30px; background-color: #FF6699; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 140px; left: 320px; width: 40px; height: 30px; background-color: #006680; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 140px; left: 400px; width: 40px; height: 30px; background-color: #FF6699; border-radius: 5px;"></div>
+                
+                <!-- Third layer nodes -->
+                <div style="position: absolute; top: 210px; left: 120px; width: 40px; height: 30px; background-color: white; border: 1px solid #FF6699; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 210px; left: 200px; width: 40px; height: 30px; background-color: #FF6699; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 210px; left: 280px; width: 40px; height: 30px; background-color: #006680; border-radius: 5px;"></div>
+                <div style="position: absolute; top: 210px; left: 360px; width: 40px; height: 30px; background-color: white; border: 1px solid #FF6699; border-radius: 5px;"></div>
+                
+                <!-- Output node -->
+                <div style="position: absolute; bottom: 0; left: 200px; width: 100px; height: 40px; border: 2px solid #333; border-radius: 20px; display: flex; justify-content: center; align-items: center; background-color: #E0F7FA; color: black;">Output</div>
+                
+                <!-- Arrows from Input to first layer -->
+                <div style="position: absolute; top: 40px; left: 145px; width: 2px; height: 30px; background-color: #33CCFF; transform: rotate(-25deg);"></div>
+                <div style="position: absolute; top: 40px; left: 220px; width: 2px; height: 30px; background-color: #33CCFF;"></div>
+                <div style="position: absolute; top: 40px; left: 260px; width: 2px; height: 30px; background-color: #FF6699; transform: rotate(25deg);"></div>
+                
+                <!-- Arrows from first layer to second layer -->
+                <div style="position: absolute; top: 100px; left: 115px; width: 2px; height: 40px; background-color: #33CCFF; transform: rotate(-30deg);"></div>
+                <div style="position: absolute; top: 100px; left: 180px; width: 2px; height: 40px; background-color: #FF6699; transform: rotate(20deg);"></div>
+                <div style="position: absolute; top: 100px; left: 250px; width: 2px; height: 40px; background-color: #FF6699; transform: rotate(-20deg);"></div>
+                <div style="position: absolute; top: 100px; left: 290px; width: 2px; height: 40px; background-color: #33CCFF; transform: rotate(30deg);"></div>
+                <div style="position: absolute; top: 100px; left: 320px; width: 2px; height: 40px; background-color: #FF6699; transform: rotate(60deg);"></div>
+                
+                <!-- Dotted line down to Output -->
+                <div style="position: absolute; top: 260px; left: 250px; height: 30px; width: 0; border-left: 2px dotted #333;"></div>
+            </div>
+        </div>
+
+        <div class="code-block">Imagine three different experts answering this question. All experts will write down 1 step of their thinking, and then share it with the group. Then all experts will go on to the next step, etc. If any expert realizes they're wrong at any point, then they leave.
+
+Act as a human resource specialist, design a recruitment and retention strategy for an e-commerce business, focusing on attracting and retaining skilled remote employees.</div>
+
+        <div class="task">
+            <h4>Tarefa:</h4>
+        </div>
+
+        <h2>8. Generate Previous Knowledge</h2>
+        <p><strong>Explicação:</strong><br>
+        Envolve gerar conhecimento relevante antes de responder à pergunta, melhorando a precisão do modelo. Podemos usar few-shot para gerar conhecimento de uma maneira especifica.</p>
+
+        <div class="genknow-diagram">
+            <div class="genknow-box" style="background-color: #FF9999; color: black; width: 100px;">Question</div>
+            <div class="genknow-arrow"></div>
+            <div class="genknow-box" style="background-color: white; color: black; border: 1px solid black; width: 150px;">Knowledge Generation</div>
+            <div class="genknow-arrow"></div>
+            <div class="genknow-knowledge">
+                <div class="genknow-k-item">Knowledge 1</div>
+                <div class="genknow-k-item">Knowledge 2</div>
+                <div class="genknow-k-item">...</div>
+            </div>
+            <div class="genknow-arrow"></div>
+            <div class="genknow-box" style="background-color: white; color: black; border: 1px solid black; width: 150px;">Knowledge Integration</div>
+            <div class="genknow-arrow"></div>
+            <div class="genknow-box" style="background-color: #99CC99; color: black; width: 100px;">Answer</div>
+        </div>
+
+        <div class="code-block">Input: A common effect of smoking lots of cigarettes in one's lifetime is a higher than normal chance of getting lung cancer.
+Knowledge: Those who consistently averaged less than one cigarette per day over their lifetime had nine times the risk of dying from lung cancer than never smokers. Among people who smoked between one and 10 cigarettes per day, the risk of dying from lung cancer was nearly 12 times higher than that of never smokers.
+Input: A rock is the same size as a pebble.
+Knowledge: A pebble is a clast of rock with a particle size of 4 to 64 millimetres based on the Udden-Wentworth scale of sedimentology. Pebbles are generally considered larger than granules (2 to 4 millimetres diameter) and smaller than
